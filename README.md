@@ -1,4 +1,4 @@
-# epoll-http-server
+# Epoll HTTP Server
 
 A simple single threaded, epoll-based HTTP server written in C++.
 
