@@ -1,0 +1,6 @@
+build/
+Debug/
+compile_commands.json
+include/*
+!include/.gitkeep
+session.vim
