@@ -19,15 +19,14 @@ wget https://github.com/nlohmann/json/releases/download/v3.9.1/json.hpp -P inclu
 In the project root, run:
 
 ```sh
-mkdir build && cd build
-cmake .. && make
+mkdir build && cd build && cmake .. && make -j4
 ```
 
 This builds the binary `server` which you can run with `./server` in the `build/` folder. It also builds the static library `server_lib` which is linked to the test binary `server_test`. You may run the unit tests (using GoogleTest) with the `ctest` command in the `build/` folder.
 
-The server may be visited in your browser through `http://localhost:8080/`. Several endpoints are available like `/`,  `/dtl`, `/home`, `/echo`.
+The server may be reached in your browser through `http://localhost:8080/`. Several endpoints are available like `/`,  `/dtl`, `/home`, `/echo`.
 
-In particular, `/echo` echoes back to the client the URL request parameters, along with the json data in the body if the request is a POST request of content type `application/json`. To see this in action, you may either visit `http://localhost:8080/echo?param1=xyz&param2=def` or run the following command:
+In particular, `/echo` echoes back to the client the URL request parameters, along with the json data in the body if the request is a POST request of content type `application/json`. To see this in action, you may either visit `http://localhost:8080/echo?param1=xyz&param2=def` or spawn another terminal instance and run the following command:
 
 ```sh
 curl \
@@ -89,3 +88,20 @@ The design of my server follows the reactor design pattern, which is an event ha
 As for features, HTTP GET and POST requests with url query parameters and JSON POST body are supported. There is also minimal exception handling due to time constraints, though I would like to add a general `HttpException` class that can be thrown and caught by the handler which will generate an appropriate HTTP response object if I had more time. 
 
 To begin, you could take a look at `main.cpp` to see how the HTTP resource endpoints along with their route handlers are created.
+
+## Performance benchmarks
+
+Using wrk, a HTTP benchmarking tool (https://github.com/wg/wrk), I managed to get 8k - 10k queries per second (QPS) with 10k concurrent connections on my main computer which runs an old Intel Core i7-4930K (6C12T@3.90GHz).
+
+Unfortunately, I wasn't able to hit 100k QPS throughput with a single thread like I had anticipated at the start of this project. I realized this too late and figured that I would need a worker thread pool to achieve 100k QPS, but I did not have enough time to implement it. Nonetheless, it was a very enjoyable experience researching and working on this project and I am happy with the results (vs 12k QPS on barebones NodeJS server). Of course, many aspects of the server could be optimized with more time.
+
+The command for the benchmark is:
+```sh
+wrk -c10k -d10s http://localhost:8080/home
+```
+
+You can install wrk via:
+```sh
+sudo apt update && sudo apt install wrk
+```
+
