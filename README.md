@@ -85,7 +85,7 @@ Overview:
 
 The design of my server follows the reactor design pattern, which is an event handling pattern for handling service requests delivered concurrently to a service handler by one or more inputs (clients on a socket). The service handler then demultiplexes the incoming requests and dispatches them synchronously to the associated request handlers. This is similar to how NodeJS handles events on a single thread and dispatches CPU intensive tasks to a worker thread pool, except that for my server, there is only one thread; I did not have time to explore this worker thread pool enhancement.
 
-As for features, HTTP GET and POST requests with url query parameters and JSON POST body are supported. There is also minimal exception handling due to time constraints, though I would like to add a general `HttpException` class that can be thrown and caught by the handler which will generate an appropriate HTTP response object if I had more time. 
+As for features, HTTP GET and POST requests with url query parameters and JSON POST body are supported; HTTP/1.1 "Connection: Keep-Alive" header for persistent connection is also supported. There is minimal exception handling due to time constraints, though I would like to add a general `HttpException` class that can be thrown and caught by the handler which will generate an appropriate HTTP response object if I had more time.
 
 To begin, you could take a look at `main.cpp` to see how the HTTP resource endpoints along with their route handlers are created.
 
